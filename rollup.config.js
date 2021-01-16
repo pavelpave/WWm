@@ -11,7 +11,7 @@ export default [
     plugins: [
       nodeResolve(), // подключение модулей node
       commonJs(), // подключение модулей commonjs
-    //   sizeSnapshot(), // напишет в консоль размер бандла
+      //   sizeSnapshot(), // напишет в консоль размер бандла
       terser(), // минификатор совместимый с ES2015+, форк и наследник UglifyES
       visualizer(), // анализатор бандла
     ],

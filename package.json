@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "rm -rf ./build && rollup --production --config rollup.config.js",
-    "prettier": "prettier  -write ./src/**/*.js"
+    "prettier": "prettier  -write ./*.js"
   },
   "devDependencies": {
     "prettier": "^2.2.1",
