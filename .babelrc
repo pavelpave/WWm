@@ -1,0 +1,9 @@
+{
+    "presets": [
+      "razzle/babel", // NEEDED
+      "stage-0"
+     ],
+     "plugins": [
+       // additional plugins
+     ]
+  }
