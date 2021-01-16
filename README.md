@@ -3,6 +3,7 @@
 Created for [WebWorcker](https://developer.mozilla.org/ru/docs/DOM/Using_web_workers)
 
 # Exemple use
+`url`: this is a link to the file
 
 `data`: this is the data that you want to transfer to the `worker`
 
@@ -19,3 +20,7 @@ let instanse = new PromiseWorker({
     return el;
   });
 ```
+
+# Trabls
+* the problem is in the react with a link to a file in the src folder, 
+I recommend putting your files with workers in the public folder
