@@ -1,1 +1,76 @@
-import e from"crypto";const t=new Uint8Array(256);let r=t.length;function s(){return r>t.length-16&&(e.randomFillSync(t),r=0),t.slice(r,r+=16)}var i=/^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;const o=[];for(let e=0;e<256;++e)o.push((e+256).toString(16).substr(1));function n(e,t=0){const r=(o[e[t+0]]+o[e[t+1]]+o[e[t+2]]+o[e[t+3]]+"-"+o[e[t+4]]+o[e[t+5]]+"-"+o[e[t+6]]+o[e[t+7]]+"-"+o[e[t+8]]+o[e[t+9]]+"-"+o[e[t+10]]+o[e[t+11]]+o[e[t+12]]+o[e[t+13]]+o[e[t+14]]+o[e[t+15]]).toLowerCase();if(!function(e){return"string"==typeof e&&i.test(e)}(r))throw TypeError("Stringified UUID is invalid");return r}function a(e,t,r){const i=(e=e||{}).random||(e.rng||s)();if(i[6]=15&i[6]|64,i[8]=63&i[8]|128,t){r=r||0;for(let e=0;e<16;++e)t[r+e]=i[e];return t}return n(i)}export default class{constructor(e){this.worker=new Worker(e.url,{type:e.type?e.type:"classic"}),this.promisesStack=[]}onMessage=e=>{e.data.Error?(this.promisesStack[e.data.id].reject(e.data.Result),this.worker.removeEventListener("message",this.onMessage),this.worker.terminate()):(this.promisesStack[e.data.id].resolve(e.data),this.worker.removeEventListener("message",this.onMessage),this.worker.terminate()),this.promisesStack[e.data.id]=void 0};invoke=e=>{if(!e)return!1;var t={data:e,id:a()},r=new Promise(((e,r)=>{this.promisesStack[t.id]={resolve:e,reject:r}}));return this.worker.postMessage(t),r};workerInit=()=>this.worker;init=()=>(this.workerInit().addEventListener("message",this.onMessage),{invoke:this.invoke})}
+"use strict";
+
+function _instanceof(left, right) { if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) { return !!right[Symbol.hasInstance](left); } else { return left instanceof right; } }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _uuid = require("uuid");
+
+function _classCallCheck(instance, Constructor) { if (!_instanceof(instance, Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var PromiseWorker = function PromiseWorker(props) {
+  var _this = this;
+
+  _classCallCheck(this, PromiseWorker);
+
+  _defineProperty(this, "onMessage", function (data) {
+    if (data.data.Error) {
+      _this.promisesStack[data.data.id].reject(data.data.Result);
+
+      _this.worker.removeEventListener('message', _this.onMessage);
+
+      _this.worker.terminate();
+    } else {
+      _this.promisesStack[data.data.id].resolve(data.data);
+
+      _this.worker.removeEventListener('message', _this.onMessage);
+
+      _this.worker.terminate();
+    }
+
+    _this.promisesStack[data.data.id] = undefined;
+  });
+
+  _defineProperty(this, "invoke", function (data) {
+    if (!data) return false;
+    var message = {
+      data: data,
+      id: (0, _uuid.v4)()
+    };
+    var promise = new Promise(function (resolve, reject) {
+      _this.promisesStack[message.id] = {
+        resolve: resolve,
+        reject: reject
+      };
+    });
+
+    _this.worker.postMessage(message);
+
+    return promise;
+  });
+
+  _defineProperty(this, "workerInit", function () {
+    return _this.worker;
+  });
+
+  _defineProperty(this, "init", function () {
+    var worker = _this.workerInit();
+
+    worker.addEventListener('message', _this.onMessage);
+    return {
+      invoke: _this.invoke
+    };
+  });
+
+  this.worker = new Worker(props.url, {
+    type: props.type ? props.type : 'classic'
+  });
+  this.promisesStack = [];
+};
+
+exports.default = PromiseWorker;

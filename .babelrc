@@ -1,9 +1,9 @@
 {
-    "presets": [
-      "razzle/babel", // NEEDED
-      "stage-0"
-     ],
-     "plugins": [
-       // additional plugins
-     ]
-  }
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+      [
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-arrow-functions"
+      ]
+  ]
+}

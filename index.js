@@ -1,4 +1,4 @@
-import { v4 } from 'uuid';
+let { v4 } = require('uuid');
 
 export default class PromiseWorker {
   constructor(props) {
